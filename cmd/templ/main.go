@@ -34,7 +34,7 @@ func (c generateCmd) Run(args []string) error {
 	home := homePath()
 
 	templ := NewTemplate(filepath.Join(home, name))
-	fmt.Printf("generate `%s`...\n", templ.DefPath())
+	fmt.Printf("generate `%s`...\n", templ.Path)
 
 	templ.Def.Author = "author"
 	templ.Def.Description = "description of this template."
@@ -227,7 +227,7 @@ func (c listCmd) Run(args []string) error {
 func main() {
 	home := homePath()
 	if home == "" {
-		fmt.Fprintf(os.Stderr, "set env $TEMPL_HOME first.\n")
+		fmt.Fprintf(os.Stderr, "set env TEMPL_HOME first.\nthen `templ help`\n")
 		return
 	}
 	os.MkdirAll(home, os.ModeDir|0600)
