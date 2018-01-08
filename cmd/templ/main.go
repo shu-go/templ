@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -150,8 +151,12 @@ func (c applyCmd) Run(args []string) error {
 			fmt.Printf("%s (%T): ", k, v)
 
 			val := ""
-			if _, err := fmt.Scanln(&val); err != nil {
+			reader := bufio.NewReader(os.Stdin)
+			if scanval, err := reader.ReadString('\n'); err != nil {
+				fmt.Fprintf(os.Stderr, "scan: %v", err)
 				val = ""
+			} else {
+				val = strings.TrimSpace(scanval)
 			}
 
 			if _, ok := v.(float64); ok {
