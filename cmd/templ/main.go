@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"bitbucket.org/shu/gli"
+	"bitbucket.org/shu_go/gli"
 )
 
 type globalCmd struct {
