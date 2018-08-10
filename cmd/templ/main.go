@@ -237,7 +237,7 @@ func main() {
 	}
 	os.MkdirAll(home, os.ModeDir|0600)
 
-	app := gli.New(&globalCmd{})
+	app := gli.NewWith(&globalCmd{})
 	app.Name = "templ"
 	app.Desc = "file templater"
 	app.Version = "0.2.0"
