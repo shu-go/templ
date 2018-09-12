@@ -81,10 +81,10 @@ func (t *Template) Save() error {
 
 func (t *Template) ApplyTo(destPath string) error {
 	if !fileExists(t.Path) {
-		return fmt.Errorf("template path does not exist")
+		return fmt.Errorf("template path does not exist: %v", t.Path)
 	}
 	if !fileExists(destPath) {
-		return fmt.Errorf("dest path does not exist")
+		return fmt.Errorf("dest path does not exist: %v", destPath)
 	}
 
 	t.Def.Vars["DEST_PATH"] = destPath
