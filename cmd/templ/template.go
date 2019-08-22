@@ -10,7 +10,7 @@ import (
 	"strings"
 	"text/template"
 
-	"bitbucket.org/shu/templ/templfunc"
+	"github.com/shu-go/templ/templfunc"
 )
 
 type TemplateDef struct {
