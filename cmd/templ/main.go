@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -145,30 +146,50 @@ func (c applyCmd) Run(args []string) error {
 
 	os.MkdirAll(target, os.ModeDir|0600)
 
+	keys := make([]string, len(templ.Def.Vars))
+	i := 0
+	for k, _ := range templ.Def.Vars {
+		keys[i] = k
+		i++
+	}
+	sort.Strings(keys)
+
 	fmt.Println()
-	for k, v := range templ.Def.Vars {
-		if strings.HasPrefix(k, "_") {
-			fmt.Printf("%s (%T): ", k, v)
+	//for k, v := range templ.Def.Vars {
+	for _, k := range keys {
+		if !strings.HasPrefix(k, "_") {
+			continue
+		}
 
-			val := ""
-			reader := bufio.NewReader(os.Stdin)
-			if scanval, err := reader.ReadString('\n'); err != nil {
-				fmt.Fprintf(os.Stderr, "scan: %v", err)
-				val = ""
-			} else {
-				val = strings.TrimSpace(scanval)
-			}
+		v := templ.Def.Vars[k]
+		fmt.Printf("%s (%v:%T): ", k, v, v)
 
-			if _, ok := v.(float64); ok {
-				if val == "" {
-					val = "0"
-				}
+		val := ""
+		reader := bufio.NewReader(os.Stdin)
+		if scanval, err := reader.ReadString('\n'); err != nil {
+			fmt.Fprintf(os.Stderr, "scan: %v", err)
+			val = ""
+		} else {
+			val = strings.TrimSpace(scanval)
+		}
+
+		if val != "" {
+			switch v.(type) {
+			case float64:
 				fval, err := strconv.ParseFloat(val, 10)
 				if err != nil {
 					return fmt.Errorf("re-defining var %q to %v: %v", k, val, err)
 				}
 				templ.Def.Vars[k] = fval
-			} else {
+
+			case bool:
+				bval, err := strconv.ParseBool(val)
+				if err != nil {
+					return fmt.Errorf("re-defining var %q to %v: %v", k, val, err)
+				}
+				templ.Def.Vars[k] = bval
+
+			default:
 				templ.Def.Vars[k] = val
 			}
 		}
